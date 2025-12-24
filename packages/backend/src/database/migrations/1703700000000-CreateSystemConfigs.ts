@@ -167,20 +167,39 @@ export class CreateSystemConfigs1703700000000 implements MigrationInterface {
     };
 
     const now = new Date().toISOString();
-    await queryRunner.query(
-      `INSERT INTO system_configs (id, name, version, description, config_data, is_active, is_default, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        'd&d5e',
-        "D&D 5th Edition",
-        "5.1",
-        "Dungeons & Dragons 5th Edition character creation system based on the SRD 5.1",
-        JSON.stringify(dnd5eConfig),
-        1,
-        1,
-        now,
-        now,
-      ]
-    );
+
+    if (isSQLite) {
+      await queryRunner.query(
+        `INSERT INTO system_configs (id, name, version, description, config_data, is_active, is_default, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          'd&d5e',
+          "D&D 5th Edition",
+          "5.1",
+          "Dungeons & Dragons 5th Edition character creation system based on the SRD 5.1",
+          JSON.stringify(dnd5eConfig),
+          1,
+          1,
+          now,
+          now,
+        ]
+      );
+    } else {
+      // PostgreSQL uses $1, $2, etc. for parameters
+      await queryRunner.query(
+        `INSERT INTO system_configs (id, name, version, description, config_data, is_active, is_default, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+        [
+          'd&d5e',
+          "D&D 5th Edition",
+          "5.1",
+          "Dungeons & Dragons 5th Edition character creation system based on the SRD 5.1",
+          JSON.stringify(dnd5eConfig),
+          true,
+          true,
+          now,
+          now,
+        ]
+      );
+    }
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

@@ -285,7 +285,7 @@ export class AddAdditionalSystems1734910000000 implements MigrationInterface {
     } else {
       await queryRunner.query(
         `INSERT INTO system_configs (id, name, version, description, config_data, is_active, is_default, created_at, updated_at)
-         VALUES ($1, $2, $3, $4, $5::jsonb, $6, $7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
+         VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
         [
           'pathfinder2e',
           'Pathfinder 2nd Edition',
@@ -316,7 +316,7 @@ export class AddAdditionalSystems1734910000000 implements MigrationInterface {
     } else {
       await queryRunner.query(
         `INSERT INTO system_configs (id, name, version, description, config_data, is_active, is_default, created_at, updated_at)
-         VALUES ($1, $2, $3, $4, $5::jsonb, $6, $7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
+         VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
         [
           'starfinder',
           'Starfinder',
@@ -347,7 +347,7 @@ export class AddAdditionalSystems1734910000000 implements MigrationInterface {
     } else {
       await queryRunner.query(
         `INSERT INTO system_configs (id, name, version, description, config_data, is_active, is_default, created_at, updated_at)
-         VALUES ($1, $2, $3, $4, $5::jsonb, $6, $7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
+         VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
         [
           'callofcthulhu',
           'Call of Cthulhu',
