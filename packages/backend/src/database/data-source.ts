@@ -49,9 +49,14 @@ const dbConfig = process.env.DATABASE_URL
       database: process.env.DB_NAME || 'character_creator',
     };
 
-// Railway internal networking doesn't need SSL, external proxy does
-// Check if using internal (.railway.internal) or external (proxy.rlwy.net) connection
-const useSSL = isProduction && dbConfig.host.includes('proxy.rlwy.net');
+// Railway external proxy requires SSL, internal does not
+// Also check for common cloud database patterns
+const isExternalConnection = dbConfig.host.includes('.rlwy.net') ||
+                              dbConfig.host.includes('.railway.app') ||
+                              !dbConfig.host.includes('.railway.internal');
+const useSSL = isProduction && isExternalConnection;
+
+console.log(`Database SSL: ${useSSL ? 'enabled' : 'disabled'} (host: ${dbConfig.host})`);
 
 const postgresOptions: DataSourceOptions = {
   type: 'postgres',
