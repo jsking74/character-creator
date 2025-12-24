@@ -1,0 +1,39 @@
+{
+  "name": "character-creator",
+  "version": "0.1.0",
+  "description": "A cross-platform character creator for tabletop RPGs",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "workspaces": [
+    "packages/shared",
+    "packages/frontend",
+    "packages/backend",
+    "packages/desktop"
+  ],
+  "scripts": {
+    "install-all": "npm install",
+    "dev": "npm run dev --workspaces",
+    "build": "npm run build --workspaces",
+    "build:web": "npm run build -w @character-creator/shared && npm run build -w @character-creator/frontend && npm run build -w @character-creator/backend",
+    "start": "npm run start -w @character-creator/backend",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces",
+    "format": "prettier --write \"packages/**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"packages/**/*.{ts,tsx,js,jsx,json,md}\"",
+    "type-check": "npm run type-check --workspaces",
+    "docker:build": "docker compose build",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f",
+    "docker:dev": "docker compose --profile dev up -d"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/uuid": "^10.0.0",
+    "prettier": "^3.1.0"
+  }
+}
