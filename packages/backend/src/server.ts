@@ -125,15 +125,36 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-// Initialize database and start server
-AppDataSource.initialize()
-  .then(() => {
-    logger.info('Database connected');
-    app.listen(PORT, () => {
-      logger.info(`Server running on http://localhost:${PORT}`);
-    });
-  })
+// Database connection with retry logic
+async function connectWithRetry(maxRetries = 5, delay = 5000): Promise<void> {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      await AppDataSource.initialize();
+      logger.info('Database connected successfully');
+      return;
+    } catch (err) {
+      logger.warn(`Database connection attempt ${attempt}/${maxRetries} failed`, {
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+      if (attempt === maxRetries) {
+        throw err;
+      }
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+}
+
+// Start server immediately, then connect to database
+app.listen(PORT, () => {
+  logger.info(`Server running on http://localhost:${PORT}`);
+});
+
+// Connect to database with retry
+connectWithRetry()
   .catch((err: Error) => {
-    logger.error('Database connection failed', { error: err.message, stack: err.stack });
-    process.exit(1);
+    logger.error('Database connection failed after all retries', {
+      error: err.message,
+      stack: err.stack
+    });
+    // Don't exit - let the health check report the issue
   });
