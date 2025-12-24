@@ -125,6 +125,30 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
+// Log database configuration (without password)
+const dbUrl = process.env.DATABASE_URL;
+if (dbUrl) {
+  try {
+    const parsed = new URL(dbUrl);
+    logger.info('Database config from DATABASE_URL', {
+      host: parsed.hostname,
+      port: parsed.port,
+      database: parsed.pathname,
+      user: parsed.username,
+    });
+  } catch {
+    logger.error('Failed to parse DATABASE_URL', { url: dbUrl.substring(0, 20) + '...' });
+  }
+} else {
+  logger.info('Database config from individual vars', {
+    host: process.env.DB_HOST || 'localhost',
+    port: process.env.DB_PORT || '5432',
+    database: process.env.DB_NAME || 'character_creator',
+    useSqlite: process.env.USE_SQLITE,
+    nodeEnv: process.env.NODE_ENV,
+  });
+}
+
 // Database connection with retry logic
 async function connectWithRetry(maxRetries = 5, delay = 5000): Promise<void> {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -133,9 +157,8 @@ async function connectWithRetry(maxRetries = 5, delay = 5000): Promise<void> {
       logger.info('Database connected successfully');
       return;
     } catch (err) {
-      logger.warn(`Database connection attempt ${attempt}/${maxRetries} failed`, {
-        error: err instanceof Error ? err.message : 'Unknown error',
-      });
+      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+      logger.warn(`Database connection attempt ${attempt}/${maxRetries} failed: ${errorMsg}`);
       if (attempt === maxRetries) {
         throw err;
       }
