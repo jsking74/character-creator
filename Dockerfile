@@ -3,8 +3,9 @@
 FROM node:20-alpine AS base-builder
 WORKDIR /app
 
-# Copy root package files including lock file
+# Copy root package files including lock file and tsconfig
 COPY package*.json ./
+COPY tsconfig.base.json ./
 
 # Copy all workspace package.json files (required for npm workspaces)
 COPY packages/shared/package*.json ./packages/shared/
