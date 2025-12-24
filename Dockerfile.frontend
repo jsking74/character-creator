@@ -13,9 +13,13 @@ COPY packages/frontend/package*.json ./packages/frontend/
 # Install dependencies
 RUN npm ci
 
-# Copy source code
-COPY packages/shared ./packages/shared
-COPY packages/frontend ./packages/frontend
+# Copy all source code at once
+COPY packages/shared/src ./packages/shared/src
+COPY packages/shared/tsconfig.json ./packages/shared/
+COPY packages/frontend/src ./packages/frontend/src
+COPY packages/frontend/tsconfig.json ./packages/frontend/
+COPY packages/frontend/vite.config.ts ./packages/frontend/
+COPY packages/frontend/index.html ./packages/frontend/
 
 # Build shared first, then frontend
 RUN npm run build --workspace=@character-creator/shared
