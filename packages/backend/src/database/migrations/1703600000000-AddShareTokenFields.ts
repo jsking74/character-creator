@@ -23,7 +23,7 @@ export class AddShareTokenFields1703600000000 implements MigrationInterface {
       'characters',
       new TableColumn({
         name: 'share_token_expires_at',
-        type: 'datetime',
+        type: 'timestamp',
         isNullable: true,
       })
     );
