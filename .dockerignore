@@ -1,12 +1,9 @@
-# Dependencies
-node_modules
-*/node_modules
+# Dependencies - exclude node_modules
+**/node_modules
 
-# Build outputs
-dist
-*/dist
-build
-*/build
+# Build outputs (we build fresh in Docker)
+**/dist
+**/build
 
 # Development files
 *.log
@@ -14,6 +11,8 @@ build
 .env.local
 .env.*.local
 *.db
+*.sqlite
+*.sqlite3
 
 # IDE
 .idea
@@ -27,16 +26,10 @@ coverage
 
 # Git
 .git
-.gitignore
 
-# Docker
-Dockerfile*
-docker-compose*
-.dockerignore
-
-# Desktop app
+# Desktop app (not needed for web deployment)
 packages/desktop
 
-# Documentation
-*.md
-docs
+# Temp files
+.cache
+temp
