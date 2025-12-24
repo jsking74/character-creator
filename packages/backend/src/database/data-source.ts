@@ -49,6 +49,10 @@ const dbConfig = process.env.DATABASE_URL
       database: process.env.DB_NAME || 'character_creator',
     };
 
+// Railway internal networking doesn't need SSL, external proxy does
+// Check if using internal (.railway.internal) or external (proxy.rlwy.net) connection
+const useSSL = isProduction && dbConfig.host.includes('proxy.rlwy.net');
+
 const postgresOptions: DataSourceOptions = {
   type: 'postgres',
   host: dbConfig.host,
@@ -56,13 +60,18 @@ const postgresOptions: DataSourceOptions = {
   username: dbConfig.username,
   password: dbConfig.password,
   database: dbConfig.database,
-  ssl: isProduction ? { rejectUnauthorized: false } : false,
+  ssl: useSSL ? { rejectUnauthorized: false } : false,
   synchronize: false,
   logging: !isProduction,
   entities: [User, Character, Party, SystemConfig],
   migrations: [InitialSchema1703300000000, AddPartyTable1703400000000, MigrateCharacterToJsonb1703500000000, AddShareTokenFields1703600000000, CreateSystemConfigs1703700000000, AddAdditionalSystems1734910000000, AddPartyExtendedFields1735010000000],
   migrationsTableName: 'typeorm_migrations',
   migrationsRun: true,
+  extra: {
+    // Connection pool settings for Railway
+    max: 5,
+    connectionTimeoutMillis: 10000,
+  },
 };
 
 export const AppDataSource = new DataSource(useSQLite ? sqliteOptions : postgresOptions);
