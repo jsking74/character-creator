@@ -45,12 +45,12 @@ const AbilityScoreCard: React.FC<{ name: string; score: number; modifier: number
   score,
   modifier,
 }) => (
-  <Card sx={{ textAlign: 'center', minWidth: 80 }}>
-    <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
-      <Typography variant="caption" color="textSecondary" sx={{ textTransform: 'uppercase' }}>
+  <Card sx={{ textAlign: 'center', minWidth: { xs: 70, sm: 80 }, flex: '1 1 auto', maxWidth: 100 }}>
+    <CardContent sx={{ p: { xs: 1, sm: 1.5 }, '&:last-child': { pb: { xs: 1, sm: 1.5 } } }}>
+      <Typography variant="caption" color="textSecondary" sx={{ textTransform: 'uppercase', fontSize: { xs: '0.65rem', sm: '0.75rem' } }}>
         {name.slice(0, 3)}
       </Typography>
-      <Typography variant="h5" fontWeight="bold">
+      <Typography variant="h5" fontWeight="bold" sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>
         {score}
       </Typography>
       <Typography variant="body2" color={modifier >= 0 ? 'success.main' : 'error.main'}>
@@ -241,16 +241,29 @@ export const ViewCharacterPage: React.FC = () => {
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       {/* Header */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+      <Box sx={{
+        display: 'flex',
+        flexDirection: { xs: 'column', sm: 'row' },
+        justifyContent: 'space-between',
+        alignItems: { xs: 'stretch', sm: 'center' },
+        gap: 2,
+        mb: 3
+      }}>
         <Button startIcon={<ArrowBackIcon />} onClick={() => navigate('/characters')}>
           Back to Characters
         </Button>
-        <Box>
+        <Box sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 1,
+          justifyContent: { xs: 'center', sm: 'flex-end' }
+        }}>
           <Button
             variant="outlined"
             startIcon={<ShareIcon />}
             onClick={() => setShareDialogOpen(true)}
-            sx={{ mr: 1 }}
+            size="medium"
+            sx={{ minHeight: 44 }}
           >
             Share
           </Button>
@@ -259,28 +272,35 @@ export const ViewCharacterPage: React.FC = () => {
             startIcon={pdfLoading ? <CircularProgress size={20} /> : <PictureAsPdfIcon />}
             onClick={handleExportPdf}
             disabled={pdfLoading}
-            sx={{ mr: 1 }}
+            size="medium"
+            sx={{ minHeight: 44 }}
           >
-            {pdfLoading ? 'Exporting...' : 'Export PDF'}
+            {pdfLoading ? 'Exporting...' : 'PDF'}
           </Button>
           <Button
             variant="outlined"
             startIcon={jsonLoading ? <CircularProgress size={20} /> : <CodeIcon />}
             onClick={handleExportJson}
             disabled={jsonLoading}
-            sx={{ mr: 1 }}
+            size="medium"
+            sx={{ minHeight: 44 }}
           >
-            {jsonLoading ? 'Exporting...' : 'Export JSON'}
+            {jsonLoading ? 'Exporting...' : 'JSON'}
           </Button>
           <Button
             variant="outlined"
             startIcon={<EditIcon />}
             onClick={() => navigate(`/characters/${id}/edit`)}
-            sx={{ mr: 1 }}
+            size="medium"
+            sx={{ minHeight: 44 }}
           >
             Edit
           </Button>
-          <IconButton color="error" onClick={() => setDeleteDialogOpen(true)}>
+          <IconButton
+            color="error"
+            onClick={() => setDeleteDialogOpen(true)}
+            sx={{ minWidth: 44, minHeight: 44 }}
+          >
             <DeleteIcon />
           </IconButton>
         </Box>

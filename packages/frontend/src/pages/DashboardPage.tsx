@@ -20,25 +20,38 @@ export const DashboardPage = () => {
         sx={{
           p: 2,
           display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' },
           justifyContent: 'space-between',
-          alignItems: 'center',
+          alignItems: { xs: 'stretch', md: 'center' },
+          gap: 2,
           borderBottom: '1px solid #ddd',
         }}
       >
-        <h1>Character Creator</h1>
+        <Typography variant="h4" component="h1" sx={{ fontSize: { xs: '1.5rem', sm: '2rem' } }}>
+          Character Creator
+        </Typography>
         {user && (
-          <Stack direction="row" spacing={2} alignItems="center">
-            <span>Welcome, {user.displayName}</span>
-            <SyncStatusIndicator />
-            <Button variant="outlined" onClick={() => navigate('/characters')}>
-              My Characters
-            </Button>
-            <Button variant="outlined" onClick={() => navigate('/parties')}>
-              My Parties
-            </Button>
-            <Button variant="contained" onClick={handleLogout}>
-              Logout
-            </Button>
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={2}
+            alignItems={{ xs: 'stretch', sm: 'center' }}
+            flexWrap="wrap"
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: { xs: 'center', sm: 'flex-start' } }}>
+              <Typography variant="body2">Welcome, {user.displayName}</Typography>
+              <SyncStatusIndicator />
+            </Box>
+            <Stack direction="row" spacing={1} justifyContent="center" flexWrap="wrap" useFlexGap>
+              <Button variant="outlined" onClick={() => navigate('/characters')} sx={{ minHeight: 44 }}>
+                My Characters
+              </Button>
+              <Button variant="outlined" onClick={() => navigate('/parties')} sx={{ minHeight: 44 }}>
+                My Parties
+              </Button>
+              <Button variant="contained" onClick={handleLogout} sx={{ minHeight: 44 }}>
+                Logout
+              </Button>
+            </Stack>
           </Stack>
         )}
       </Box>
