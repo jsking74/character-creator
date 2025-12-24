@@ -361,6 +361,33 @@ curl https://your-api-url.com/health/ready
 
 ---
 
+## GitHub Actions CI/CD (Optional)
+
+This project includes a GitHub Actions workflow for automated testing and deployment.
+
+### Setting Up Automated Deployments
+
+1. **Get Railway Token:**
+   - Go to [railway.app](https://railway.app) → Account Settings → Tokens
+   - Create a new token
+
+2. **Add Token to GitHub Secrets:**
+   - Go to your GitHub repo → Settings → Secrets and variables → Actions
+   - Click "New repository secret"
+   - Name: `RAILWAY_TOKEN`
+   - Value: Your Railway token
+
+3. **How It Works:**
+   - On every push to `main`, the workflow:
+     1. Runs all tests (backend + frontend)
+     2. If tests pass, deploys to Railway
+   - Failed tests will block deployment
+
+4. **Manual Deployment:**
+   - Go to Actions tab → "Deploy to Railway" → "Run workflow"
+
+---
+
 ## Updating Your Deployment
 
 ### Railway/Render (Automatic)
@@ -370,7 +397,7 @@ git add .
 git commit -m "Update feature"
 git push origin main
 ```
-Deployment happens automatically.
+Deployment happens automatically (with GitHub Actions, tests run first).
 
 ### Docker/VPS (Manual)
 ```bash
