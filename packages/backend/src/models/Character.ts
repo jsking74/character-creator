@@ -44,7 +44,7 @@ export class Character {
   @Column({ type: 'varchar', length: 16, nullable: true, unique: true })
   share_token?: string;
 
-  @Column({ type: 'datetime', nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   share_token_expires_at?: Date;
 
   @Column({ type: 'int', default: 0 })
