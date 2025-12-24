@@ -49,12 +49,14 @@ const dbConfig = process.env.DATABASE_URL
       database: process.env.DB_NAME || 'character_creator',
     };
 
-// Railway external proxy requires SSL, internal does not
-// Also check for common cloud database patterns
-const isExternalConnection = dbConfig.host.includes('.rlwy.net') ||
-                              dbConfig.host.includes('.railway.app') ||
-                              !dbConfig.host.includes('.railway.internal');
-const useSSL = isProduction && isExternalConnection;
+// Only use SSL for known external cloud database hosts
+// Local Docker, localhost, and internal hostnames should NOT use SSL
+const isCloudDatabase = dbConfig.host.includes('.rlwy.net') ||
+                        dbConfig.host.includes('.railway.app') ||
+                        dbConfig.host.includes('.render.com') ||
+                        dbConfig.host.includes('.amazonaws.com') ||
+                        dbConfig.host.includes('.azure.com');
+const useSSL = isProduction && isCloudDatabase;
 
 console.log(`Database SSL: ${useSSL ? 'enabled' : 'disabled'} (host: ${dbConfig.host})`);
 
