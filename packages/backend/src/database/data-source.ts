@@ -15,6 +15,18 @@ import { AddPartyExtendedFields1735010000000 } from './migrations/1735010000000-
 const isProduction = process.env.NODE_ENV === 'production';
 const useSQLite = process.env.USE_SQLITE === 'true' || (!isProduction && process.env.USE_SQLITE !== 'false');
 
+// Parse DATABASE_URL if provided (Railway, Render, Heroku format)
+function parsePostgresUrl(url: string): { host: string; port: number; username: string; password: string; database: string } {
+  const parsed = new URL(url);
+  return {
+    host: parsed.hostname,
+    port: parseInt(parsed.port || '5432'),
+    username: parsed.username,
+    password: parsed.password,
+    database: parsed.pathname.slice(1), // Remove leading /
+  };
+}
+
 const sqliteOptions: DataSourceOptions = {
   type: 'better-sqlite3',
   database: process.env.SQLITE_PATH || 'dev.db',
@@ -26,13 +38,25 @@ const sqliteOptions: DataSourceOptions = {
   migrationsRun: true,
 };
 
+// Use DATABASE_URL if available, otherwise fall back to individual vars
+const dbConfig = process.env.DATABASE_URL
+  ? parsePostgresUrl(process.env.DATABASE_URL)
+  : {
+      host: process.env.DB_HOST || 'localhost',
+      port: parseInt(process.env.DB_PORT || '5432'),
+      username: process.env.DB_USER || 'postgres',
+      password: process.env.DB_PASSWORD || 'postgres',
+      database: process.env.DB_NAME || 'character_creator',
+    };
+
 const postgresOptions: DataSourceOptions = {
   type: 'postgres',
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT || '5432'),
-  username: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD || 'postgres',
-  database: process.env.DB_NAME || 'character_creator',
+  host: dbConfig.host,
+  port: dbConfig.port,
+  username: dbConfig.username,
+  password: dbConfig.password,
+  database: dbConfig.database,
+  ssl: isProduction ? { rejectUnauthorized: false } : false,
   synchronize: false,
   logging: !isProduction,
   entities: [User, Character, Party, SystemConfig],
