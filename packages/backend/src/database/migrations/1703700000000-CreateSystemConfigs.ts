@@ -4,6 +4,7 @@ export class CreateSystemConfigs1703700000000 implements MigrationInterface {
   name = 'CreateSystemConfigs1703700000000';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    const isSQLite = queryRunner.connection.driver.options.type === 'better-sqlite3';
     // Create system_configs table
     await queryRunner.createTable(
       new Table({
@@ -49,13 +50,13 @@ export class CreateSystemConfigs1703700000000 implements MigrationInterface {
           },
           {
             name: 'created_at',
-            type: 'datetime',
-            default: 'CURRENT_TIMESTAMP',
+            type: isSQLite ? 'datetime' : 'timestamp',
+            default: isSQLite ? "(datetime('now'))" : 'CURRENT_TIMESTAMP',
           },
           {
             name: 'updated_at',
-            type: 'datetime',
-            default: 'CURRENT_TIMESTAMP',
+            type: isSQLite ? 'datetime' : 'timestamp',
+            default: isSQLite ? "(datetime('now'))" : 'CURRENT_TIMESTAMP',
           },
         ],
       }),
@@ -165,8 +166,9 @@ export class CreateSystemConfigs1703700000000 implements MigrationInterface {
       },
     };
 
+    const now = new Date().toISOString();
     await queryRunner.query(
-      `INSERT INTO system_configs (id, name, version, description, config_data, is_active, is_default, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))`,
+      `INSERT INTO system_configs (id, name, version, description, config_data, is_active, is_default, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         'd&d5e',
         "D&D 5th Edition",
@@ -175,6 +177,8 @@ export class CreateSystemConfigs1703700000000 implements MigrationInterface {
         JSON.stringify(dnd5eConfig),
         1,
         1,
+        now,
+        now,
       ]
     );
   }
